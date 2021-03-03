@@ -23,9 +23,17 @@ class User(db.Model):
     def __repr__(self):
         return f"User(id={self.id}, email={self.email}, name={self.name}, bio={self.bio})"
 
+    def to_dict(self):
+        return {
+            id: self.id,
+            name: self.name,
+            email: self.email.
+            bio: self.bio
+        }
+
 post_tags = db.Table(
     "post_tags",
-    db.Column("tag_id", db.Integer, db.ForeignKey('tags.id'), primary_key=True)
+    db.Column("tag_id", db.Integer, db.ForeignKey('tags.id'), primary_key=True),
     db.Column('post_id', db.Integer, db.ForeignKey('posts.id'), primary_key=True)
 )
 
@@ -44,6 +52,9 @@ class Post(db.Model):
     def __repr__(self):
         return f"Post(id={self.id}, header={self.header}, body={self.body}, author_id={self.author_id})"
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 class Tag(db.Model):
     __tablename__ = "tags"
 
@@ -54,3 +65,6 @@ class Tag(db.Model):
 
     def __repr__(self):
         return f"Tag(id={self.id}, tag={self.tag})"
+
+    def as_dict(self):
+        return {id: self.id, tag: self.tag}
